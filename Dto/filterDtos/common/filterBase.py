@@ -70,6 +70,7 @@ class FilterBase(BaseModel):
         operator (Any): The operator to use
         value (Any): The value to use
         _filter_dictionary (FilterDictionary | None): Filter dictionary (private)
+        _table (DeclarativeBase | None): The table filtered on (private)
     """
 
     field: Any          # each attribute is tagged to Any to allow personalized type checking error message.
