@@ -23,7 +23,7 @@ user_filter_dictionary: dict[str, dict[OPERATORS, Callable]] = {
     },
     "age": {
         OPERATORS.EQUAL: FilterMethodCheckValue.is_value_int,
-        OPERATORS.GT: FilterMethodCheckValue.is_value_int,
+        OPERATORS.GREATER_THAN: FilterMethodCheckValue.is_value_int,
         OPERATORS.BETWEEN: FilterMethodCheckValue.is_value_list_int
     },
     "created_at": {
@@ -80,7 +80,7 @@ user_filter_dictionary: dict[str, dict[OPERATORS, Callable]] = {
     },
     "age": {
         OPERATORS.EQUAL: FilterMethodCheckValue.is_value_int,
-        OPERATORS.GT: FilterMethodCheckValue.is_value_int,
+        OPERATORS.GREATER_THAN: FilterMethodCheckValue.is_value_int,
         OPERATORS.BETWEEN: FilterMethodCheckValue.is_value_list_int
     },
     "created_at": {
