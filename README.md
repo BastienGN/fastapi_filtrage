@@ -36,7 +36,7 @@ Windows:
 
 ```bash
 
-.\myenv\Scripts\activate
+./myenv/Scripts/activate
 ```
 3. Install Dependencies from requirements.txt
 Use the next command line to install the requirements listed in the file.
