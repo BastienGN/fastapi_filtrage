@@ -25,7 +25,7 @@ class OPERATORS(str, Enum):
     IIN = "IIN"         # exactly one of these values without case sensitivity
                         # Accepted values: str
     BETWEEN = "BETWEEN" # between two bounds (included)
-                        # Accepted values: NOT_CHECKED
+                        # Accepted values: int
 
     def __repr__(self):
             return f"{self.value}"

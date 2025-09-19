@@ -14,7 +14,7 @@ productRouter = APIRouter(
 )
 
 
-@productRouter.get("")
+@productRouter.post("")
 def get_products(product_filter: GetProductFiltered, db: Session = Depends(get_connection),select_stmt: Select[ProductBdd] = Depends(ProductBdd.get_select_stmt) ):
     return productController.get_filtered_products(product_filter, db, select_stmt)
 

@@ -18,7 +18,9 @@ product_filter_dictionary: dict[str, dict[OPERATORS, Callable]] = {
         OPERATORS.IIN: FilterMethodCheckValue.is_value_list_str,
     },
     "price": {
-        OPERATORS.IEQUAL: FilterMethodCheckValue.is_value_int,
+        OPERATORS.BETWEEN: FilterMethodCheckValue.is_value_between_operator_suitable,
+        OPERATORS.EQUAL: FilterMethodCheckValue.is_value_int,
+        OPERATORS.IN: FilterMethodCheckValue.is_value_list_int,
         OPERATORS.GREATER_THAN: FilterMethodCheckValue.is_value_int,
         OPERATORS.LESSER_THAN: FilterMethodCheckValue.is_value_int
     },

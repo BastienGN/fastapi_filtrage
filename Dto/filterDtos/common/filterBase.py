@@ -101,5 +101,14 @@ class FilterBase(BaseModel):
         return self
 
     def update_query(self, stmt: Select[Base]) -> Select[Base]:
-        field_column: InstrumentedAttribute = getattr(self._table, self.field)
+        try:
+            field_column: InstrumentedAttribute = getattr(self._table, self.field)
+
+        except AttributeError:
+            raise HTTPException(
+                500,
+                f"This column name {self.field} doesn't exist in the table. "
+                f"Check the table name associated with {self._table.__name__}"
+            )
+
         return stmt.where(operator_functions[self.operator](field_column, self.value))
