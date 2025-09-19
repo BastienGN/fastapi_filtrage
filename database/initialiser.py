@@ -5,7 +5,6 @@ from database.tables.base import Base
 
 # Import des modèles pour qu'ils soient enregistrés
 import database.tables.productBdd
-import database.tables.commandeBdd
 
 DATABASE_URL = f"sqlite:///ma_base.db"
 
