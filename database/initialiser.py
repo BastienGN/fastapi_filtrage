@@ -6,7 +6,7 @@ from database.tables.base import Base
 # Needed for tables création
 import database.tables.productBdd
 
-DATABASE_URL = f"sqlite:///ma_base.db"
+DATABASE_URL = f"sqlite:///myBdd.db"
 
 engine = create_engine(DATABASE_URL, echo=True)
 Session = sessionmaker(bind=engine)
