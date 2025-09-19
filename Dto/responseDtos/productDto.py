@@ -14,5 +14,5 @@ class ProductDto(BaseModel):
 
 
 class GetProductFiltered(ListProductFilter):
-    name: str = "aaaa"
+    pass
 

@@ -13,10 +13,12 @@ from database.tables.productBdd import ProductBdd
 product_filter_dictionary: dict[str, dict[OPERATORS, Callable]] = {
     "brand": {
         OPERATORS.EQUAL: FilterMethodCheckValue.is_value_str,
-        OPERATORS.IN: FilterMethodCheckValue.is_value_list_str
+        OPERATORS.IEQUAL: FilterMethodCheckValue.is_value_str,
+        OPERATORS.IN: FilterMethodCheckValue.is_value_list_str,
+        OPERATORS.IIN: FilterMethodCheckValue.is_value_list_str,
     },
     "price": {
-        OPERATORS.EQUAL: FilterMethodCheckValue.is_value_int,
+        OPERATORS.IEQUAL: FilterMethodCheckValue.is_value_int,
         OPERATORS.GREATER_THAN: FilterMethodCheckValue.is_value_int,
         OPERATORS.LESSER_THAN: FilterMethodCheckValue.is_value_int
     },
