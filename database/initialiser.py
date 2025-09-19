@@ -3,16 +3,15 @@ from sqlalchemy.orm import sessionmaker
 
 from database.tables.base import Base
 
-# Import des modèles pour qu'ils soient enregistrés
+# Needed for tables création
 import database.tables.productBdd
-import database.tables.commandeBdd
 
-DATABASE_URL = f"sqlite:///ma_base.db"
+DATABASE_URL = f"sqlite:///myBdd.db"
 
 engine = create_engine(DATABASE_URL, echo=True)
 Session = sessionmaker(bind=engine)
 
-# Création de toutes les tables
+# Tables creation
 Base.metadata.create_all(engine)
 
 

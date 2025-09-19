@@ -1,12 +1,13 @@
-from abc import ABC, abstractmethod
 from typing import Any, Callable
 
 from fastapi import HTTPException
 from pydantic import BaseModel, PrivateAttr, model_validator
 from sqlalchemy import Select
+from sqlalchemy.orm import DeclarativeBase
+from sqlalchemy.orm.attributes import InstrumentedAttribute
 
 from Dto.filterDtos.common.filterDictionary import FilterDictionary
-from Dto.filterDtos.common.filterOperators import OPERATORS
+from Dto.filterDtos.common.filterOperators import OPERATORS, operator_functions
 from database.tables.base import Base
 
 
@@ -57,7 +58,7 @@ def check_filter_entries(field_entry: Any, operator_entry: Any, value_entry: Any
     __check_filter_value_entry(field_entry, operator_entry, value_entry, filter_dictionnary.get_value_check_function_by_field_and_operator(field_entry, operator_entry))
 
 
-class FilterBase(BaseModel, ABC):
+class FilterBase(BaseModel):
     """
     Base class for all filters.
     
@@ -69,6 +70,7 @@ class FilterBase(BaseModel, ABC):
         operator (Any): The operator to use
         value (Any): The value to use
         _filter_dictionary (FilterDictionary | None): Filter dictionary (private)
+        _table (DeclarativeBase | None): The table filtered on (private)
     """
 
     field: Any          # each attribute is tagged to Any to allow personalized type checking error message.
@@ -76,6 +78,7 @@ class FilterBase(BaseModel, ABC):
     value: Any          # each attribute is tagged to Any to allow personalized type checking error message.
 
     _filter_dictionary: FilterDictionary | None = PrivateAttr(default=None) # private attribute hidden in the request params and instanced in every derived classes.
+    _table: DeclarativeBase | None = PrivateAttr(default=None)
 
     @model_validator(mode="after")
     def check_filter(self) -> 'FilterBase':
@@ -85,12 +88,27 @@ class FilterBase(BaseModel, ABC):
                 "To initialize a filter you have to specify a filterDictionary."
             )
 
+        if not self._table:
+            raise HTTPException(
+                500,
+                "To initialize a filter you have to specify a table."
+            )
+
         check_filter_entries(
             self.field, self.operator, self.value, self._filter_dictionary
         )
 
         return self
 
-    @abstractmethod
     def update_query(self, stmt: Select[Base]) -> Select[Base]:
-        pass
+        try:
+            field_column: InstrumentedAttribute = getattr(self._table, self.field)
+
+        except AttributeError:
+            raise HTTPException(
+                500,
+                f"This column name {self.field} doesn't exist in the table. "
+                f"Check the table name associated with {self._table.__name__}"
+            )
+
+        return stmt.where(operator_functions[self.operator](field_column, self.value))

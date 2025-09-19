@@ -1,3 +1,5 @@
+from sqlalchemy.orm import DeclarativeBase
+
 # Filter System Documentation
 
 ## Overview
@@ -23,7 +25,7 @@ user_filter_dictionary: dict[str, dict[OPERATORS, Callable]] = {
     },
     "age": {
         OPERATORS.EQUAL: FilterMethodCheckValue.is_value_int,
-        OPERATORS.GT: FilterMethodCheckValue.is_value_int,
+        OPERATORS.GREATER_THAN: FilterMethodCheckValue.is_value_int,
         OPERATORS.BETWEEN: FilterMethodCheckValue.is_value_list_int
     },
     "created_at": {
@@ -42,10 +44,12 @@ from pydantic import PrivateAttr
 
 from Dto.filterDtos.common.filterBase import FilterBase
 from Dto.filterDtos.common.filterDictionary import FilterDictionary
+from database.tables.userBdd import UserBdd 
 
 
 class UserFilter(FilterBase):
     _filter_dictionary: FilterDictionary = PrivateAttr(default=FilterDictionary(user_filter_dictionary))
+    _table: DeclarativeBase = PrivateAttr(default=UserBdd)
 ```
 
 ### 3. Create a Filter List Class
@@ -66,12 +70,14 @@ class UserFilterList(FilterBaseList):
 from typing import Callable
 
 from pydantic import PrivateAttr
+from sqlalchemy.orm import DeclarativeBase
 
 from Dto.filterDtos.common.filterBase import FilterBase
 from Dto.filterDtos.common.filterBaseList import FilterBaseList
 from Dto.filterDtos.common.filterMethodCheckValue import FilterMethodCheckValue
 from Dto.filterDtos.common.filterDictionary import FilterDictionary
 from Dto.filterDtos.common.filterOperators import OPERATORS
+from database.tables.userBdd import UserBdd
 
 user_filter_dictionary: dict[str, dict[OPERATORS, Callable]] = {
     "name": {
@@ -80,7 +86,7 @@ user_filter_dictionary: dict[str, dict[OPERATORS, Callable]] = {
     },
     "age": {
         OPERATORS.EQUAL: FilterMethodCheckValue.is_value_int,
-        OPERATORS.GT: FilterMethodCheckValue.is_value_int,
+        OPERATORS.GREATER_THAN: FilterMethodCheckValue.is_value_int,
         OPERATORS.BETWEEN: FilterMethodCheckValue.is_value_list_int
     },
     "created_at": {
@@ -91,7 +97,8 @@ user_filter_dictionary: dict[str, dict[OPERATORS, Callable]] = {
 
 class UserFilter(FilterBase):
     _filter_dictionary: FilterDictionary = PrivateAttr(default=FilterDictionary(user_filter_dictionary))
-
+    _table: DeclarativeBase = PrivateAttr(default=UserBdd)
+    
 
 class UserFilterList(FilterBaseList):
     filters: list[UserFilter]
@@ -152,12 +159,16 @@ The main and most procedure, see 'Creating a New Filter Type' section.
 
 As reminder Operators are used to check is the operator field correspond to one of the allowed one in the filterDictionary of a Filter.
 
-To create a new operator you have to add a value in the Enum and explain (please) the utility for this.
+To create a new operator you have to add a value in the Enum and explain the utility for this.
 
 ```python
-LTE = "lte" # lower or equal than (<=)
+OPERATORS.LESSER_THAN_OR_EQUAL = "LTE" # lower or equal than (<=)
 ```
 
+Then you must map this new operator to its corresponding SQLAlchemy function:
+```python
+OPERATORS.LESSER_THAN_OR_EQUAL: lambda col, val: col < val
+```
 ### 3. Creating a New CheckValueMethod
 
 As reminder checkValueMethods are used to check if the value field correspond to a certain criteria. 
